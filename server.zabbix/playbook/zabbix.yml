@@ -2,6 +2,13 @@
 - name: Deploy Zabbix Services
   hosts: all
   become: true
+  vars:
+    zabbix_repo_map:
+      Debian:
+        "13": "https://repo.zabbix.com/zabbix/7.4/release/debian/pool/main/z/zabbix-release/zabbix-release_latest_7.4+debian13_all.deb"
+      Ubuntu:
+        "22": "https://repo.zabbix.com/zabbix/7.4/release/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.4+ubuntu22.04_all.deb"
+        "24": "https://repo.zabbix.com/zabbix/7.4/release/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.4+ubuntu24.04_all.deb"
 
   pre_tasks:
     - name: Refresh apt repository cache (always run)
@@ -9,6 +16,10 @@
         update_cache: yes
         cache_valid_time: 0
       changed_when: false
+
+    - name: Select correct Zabbix repo URL based on OS
+      set_fact:
+        zabbix_repo_url: "{{ zabbix_repo_map[ansible_facts.distribution][ansible_facts.distribution_major_version] }}"
 
   roles:
     - role: zabbix-agent

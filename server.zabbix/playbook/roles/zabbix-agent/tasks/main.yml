@@ -1,7 +1,8 @@
 ---
 - name: Download Zabbix repo .deb package
   ansible.builtin.get_url:
-    url: "https://repo.zabbix.com/zabbix/7.4/release/debian/pool/main/z/zabbix-release/zabbix-release_latest_7.4+debian13_all.deb"
+    url: "{{ zabbix_repo_url }}"
+    #url: "https://repo.zabbix.com/zabbix/7.4/release/debian/pool/main/z/zabbix-release/zabbix-release_latest_7.4+debian13_all.deb"
     dest: "/tmp/zabbix-release_7.4.deb"
     mode: "0644"
 
