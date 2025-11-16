@@ -1,0 +1,35 @@
+---
+- name: Download Zabbix repo .deb package
+  ansible.builtin.get_url:
+    url: "https://repo.zabbix.com/zabbix/7.4/release/debian/pool/main/z/zabbix-release/zabbix-release_latest_7.4+debian13_all.deb"
+    dest: "/tmp/zabbix-release_7.4.deb"
+    mode: "0644"
+
+- name: Install Zabbix repo .deb
+  ansible.builtin.apt:
+    deb: "/tmp/zabbix-release_7.4.deb"
+    state: present
+  register: repo_installed
+
+- name: Update apt cache (only when repo is newly installed)
+  ansible.builtin.apt:
+    update_cache: true
+  when: repo_installed is changed
+
+- name: Install Zabbix Agent2
+  ansible.builtin.apt:
+    name: zabbix-agent2
+    state: present
+
+- name: Ensure Zabbix Agent2 service enabled and running
+  ansible.builtin.service:
+    name: zabbix-agent2
+    enabled: true
+    state: started
+
+- name: Deploy Zabbix Agent2 config
+  ansible.builtin.copy:
+    src: zabbix_agent2.conf
+    dest: /etc/zabbix/zabbix_agent2.conf
+    mode: "0644"
+  notify: restart zabbix-agent2
