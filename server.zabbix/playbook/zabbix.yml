@@ -11,4 +11,4 @@
       changed_when: false
 
   roles:
-    - role: zabbix-agent2
+    - role: zabbix-agent
