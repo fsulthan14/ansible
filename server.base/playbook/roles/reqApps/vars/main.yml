@@ -1,0 +1,10 @@
+---
+
+base_packages:
+      - htop
+      - curl
+      - git
+      - vim
+      - iperf3
+      - ufw
+      - net-tools
